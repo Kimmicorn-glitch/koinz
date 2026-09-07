@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: koinz-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: development
+      - key: DATABASE_URL
+        value: sqlite:///./localhands.db
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "120"
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: SECURITY_HEADERS_ENABLED
+        value: "true"
+      - key: RATE_LIMIT_LOGIN_PER_MINUTE
+        value: "10"
+      - key: RATE_LIMIT_PAYMENTS_PER_MINUTE
+        value: "60"
+      - key: DATA_ENCRYPTION_KEY
+        generateValue: true
+      - key: DEFAULT_EMPLOYER_EMAIL
+        value: employer@localhands.com
+      - key: DEFAULT_EMPLOYER_PASSWORD
+        value: ChangeMe123!
+      - key: DEFAULT_WORKER_EMAIL
+        value: worker@localhands.com
+      - key: DEFAULT_WORKER_PASSWORD
+        value: ChangeMe123!
+      - key: PSP_PROVIDER
+        value: mock
+      - key: PYTHON_VERSION
+        value: "3.13.7"
