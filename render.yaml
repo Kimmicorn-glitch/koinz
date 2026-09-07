@@ -28,7 +28,7 @@ services:
       - key: RATE_LIMIT_PAYMENTS_PER_MINUTE
         value: "60"
       - key: DATA_ENCRYPTION_KEY
-        generateValue: true
+        sync: false
       - key: DEFAULT_EMPLOYER_EMAIL
         value: employer@localhands.com
       - key: DEFAULT_EMPLOYER_PASSWORD
