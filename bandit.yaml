@@ -1,0 +1,10 @@
+# Bandit security configuration
+[bandit]
+targets = backend/app
+exclude_dirs = tests,.venv,node_modules
+skips = B101,B311
+assert_used = False
+
+# Severity levels
+[BANDIT_DEFAULTS]
+agg = function

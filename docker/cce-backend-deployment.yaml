@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: local-hands-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: local-hands-backend
+  template:
+    metadata:
+      labels:
+        app: local-hands-backend
+    spec:
+      containers:
+        - name: backend
+          image: swr.af-south-1.myhuaweicloud.com/<org>/local-hands-backend:2.0.0
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: local-hands-backend-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: local-hands-backend
+spec:
+  selector:
+    app: local-hands-backend
+  ports:
+    - port: 8000
+      targetPort: 8000

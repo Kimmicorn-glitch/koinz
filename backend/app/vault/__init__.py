@@ -1,0 +1,1 @@
+"""Encrypted data vault domain."""

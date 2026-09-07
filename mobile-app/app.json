@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Local Hands 2.0",
+    "slug": "local-hands-mobile-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"]
+  }
+}

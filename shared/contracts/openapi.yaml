@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: Local Hands 2.0 API
+  version: 2.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service healthy
+  /auth/login:
+    post:
+      summary: Login and receive JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+  /profiles/:
+    post:
+      summary: Create worker profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileCreate"
+      responses:
+        "200":
+          description: Profile created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileResponse"
+  /jobs/:
+    post:
+      summary: Create employer job
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobCreate"
+      responses:
+        "200":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobResponse"
+  /matches/{job_id}:
+    get:
+      summary: Retrieve ranked matches for a job
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Candidate matches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchResponse"
+  /analytics/overview:
+    get:
+      summary: Platform analytics overview
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsOverview"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    TokenResponse:
+      type: object
+      required: [access_token, token_type, role]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum: [bearer]
+        role:
+          type: string
+          enum: [worker, employer, admin]
+    ProfileCreate:
+      type: object
+      required: [full_name, phone, township, skills]
+      properties:
+        full_name:
+          type: string
+        phone:
+          type: string
+        township:
+          type: string
+        skills:
+          type: array
+          items: { type: string }
+        resume_obs_key:
+          type: string
+          nullable: true
+    ProfileResponse:
+      allOf:
+        - $ref: "#/components/schemas/ProfileCreate"
+        - type: object
+          required: [id, user_id]
+          properties:
+            id: { type: string }
+            user_id: { type: string }
+    JobCreate:
+      type: object
+      required: [title, description, location, required_skills]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        required_skills:
+          type: array
+          items: { type: string }
+    JobResponse:
+      allOf:
+        - $ref: "#/components/schemas/JobCreate"
+        - type: object
+          required: [id, employer_id]
+          properties:
+            id: { type: string }
+            employer_id: { type: string }
+    MatchItem:
+      type: object
+      properties:
+        profile_id: { type: string }
+        score: { type: number, format: float }
+        matched_skills:
+          type: array
+          items: { type: string }
+        missing_skills:
+          type: array
+          items: { type: string }
+    MatchResponse:
+      type: object
+      properties:
+        job_id: { type: string }
+        matches:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchItem"
+    AnalyticsOverview:
+      type: object
+      properties:
+        total_profiles: { type: integer }
+        total_jobs: { type: integer }
+        match_success_rate: { type: number, format: float }
+        monthly_placements:
+          type: array
+          items: { type: integer }

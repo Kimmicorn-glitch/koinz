@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: local-hands-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: local-hands-web
+  template:
+    metadata:
+      labels:
+        app: local-hands-web
+    spec:
+      containers:
+        - name: web
+          image: swr.af-south-1.myhuaweicloud.com/<org>/local-hands-web:2.0.0
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: local-hands-web-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: local-hands-web
+spec:
+  selector:
+    app: local-hands-web
+  ports:
+    - port: 3000
+      targetPort: 3000

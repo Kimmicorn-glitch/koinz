@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lh-red: #b11226;
+  --lh-soft-red: #ee425e;
+  --lh-line: #f4c9d0;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7f8 100%);
+  color: #121212;
+}
+
+.card {
+  @apply rounded-2xl bg-white shadow-soft border border-[#f8dbe0] transition-all duration-300;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
